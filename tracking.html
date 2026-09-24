@@ -1,0 +1,3721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graduate Student Tracking System</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+:root{
+    --dashboard:#073b72;
+    --dashboard-light:#e8f0f8;
+    --phd:#1976d2;
+    --phd-light:#e3f2fd;
+    --maed:#8ecae6;
+    --maed-light:#eaf8fc;
+    --mba:#8e6bbf;
+    --mba-light:#f0e9f8;
+    --mpa:#176b3a;
+    --mpa-light:#e5f4eb;
+    --mscj:#f5a6a6;
+    --mscj-light:#fff0f0;
+    --bg:#f4f6f9;
+    --white:#fff;
+    --text:#263238;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* ================= LOGIN ================= */
+
+.login-screen{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#073b72,#0b5aa5);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:99999;
+}
+
+.login-screen.hidden{
+    display:none;
+}
+
+.login-box{
+    width:420px;
+    max-width:100%;
+    background:white;
+    border-radius:16px;
+    padding:35px;
+    box-shadow:0 15px 50px rgba(0,0,0,.25);
+}
+
+.login-logo{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.login-icon{
+    width:70px;
+    height:70px;
+    background:#073b72;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 15px;
+    font-size:32px;
+}
+
+.login-logo h1{
+    color:#073b72;
+    font-size:24px;
+}
+
+.login-logo p{
+    color:#777;
+    font-size:13px;
+    margin-top:6px;
+}
+
+.login-form-group{
+    margin-bottom:17px;
+}
+
+.login-form-group label{
+    display:block;
+    font-size:13px;
+    font-weight:bold;
+    color:#444;
+    margin-bottom:7px;
+}
+
+.login-input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    outline:none;
+    font-size:14px;
+}
+
+.login-input:focus{
+    border-color:#0b5aa5;
+    box-shadow:0 0 0 3px rgba(11,90,165,.08);
+}
+
+.password-wrapper{
+    position:relative;
+}
+
+.password-wrapper .login-input{
+    padding-right:50px;
+}
+
+.show-password{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:8px;
+    font-size:12px;
+    color:#666;
+    cursor:pointer;
+}
+
+.show-password input{
+    width:16px;
+    height:16px;
+    cursor:pointer;
+}
+
+.login-button{
+    width:100%;
+    border:none;
+    background:#073b72;
+    color:white;
+    padding:13px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.login-button:hover{
+    background:#0b5aa5;
+}
+
+.login-error{
+    display:none;
+    background:#fee2e2;
+    color:#b91c1c;
+    padding:10px;
+    border-radius:7px;
+    margin-bottom:15px;
+    font-size:12px;
+    text-align:center;
+}
+
+.login-error.show{
+    display:block;
+}
+
+.login-footer{
+    text-align:center;
+    color:#999;
+    font-size:11px;
+    margin-top:20px;
+}
+
+/* ================= APP ================= */
+
+.app{
+    display:block;
+}
+
+.app.hidden{
+    display:none;
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:250px;
+    height:100vh;
+    background:var(--dashboard);
+    color:white;
+    padding:20px 15px;
+    overflow-y:auto;
+}
+
+.logo{
+    text-align:center;
+    padding:10px 5px 25px;
+    border-bottom:1px solid rgba(255,255,255,.2);
+    margin-bottom:20px;
+}
+
+.logo h2{
+    font-size:20px;
+}
+
+.logo p{
+    font-size:12px;
+    opacity:.75;
+    margin-top:5px;
+}
+
+.menu-title{
+    font-size:11px;
+    text-transform:uppercase;
+    opacity:.6;
+    margin:20px 10px 8px;
+}
+
+.menu-btn{
+    width:100%;
+    border:none;
+    color:white;
+    padding:12px 14px;
+    margin-bottom:5px;
+    text-align:left;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.2s;
+    font-size:14px;
+}
+
+.menu-dashboard{
+    background:var(--dashboard);
+}
+
+.menu-dashboard:hover,
+.menu-dashboard.active{
+    background:#0b5aa5;
+}
+
+.menu-phd{
+    background:var(--phd);
+}
+
+.menu-phd:hover,
+.menu-phd.active{
+    background:#1565c0;
+}
+
+.menu-maed{
+    background:var(--maed);
+    color:#073b72;
+}
+
+.menu-maed:hover,
+.menu-maed.active{
+    background:#75bddb;
+    color:#073b72;
+}
+
+.menu-mba{
+    background:var(--mba);
+}
+
+.menu-mba:hover,
+.menu-mba.active{
+    background:#7653a8;
+}
+
+.menu-mpa{
+    background:var(--mpa);
+}
+
+.menu-mpa:hover,
+.menu-mpa.active{
+    background:#0f542d;
+}
+
+.menu-mscj{
+    background:var(--mscj);
+    color:#7a1f1f;
+}
+
+.menu-mscj:hover,
+.menu-mscj.active{
+    background:#e98d8d;
+    color:#7a1f1f;
+}
+
+.menu-normal{
+    background:rgba(255,255,255,.08);
+}
+
+.menu-normal:hover{
+    background:rgba(255,255,255,.18);
+}
+
+.main{
+    margin-left:250px;
+    padding:25px;
+}
+
+.topbar{
+    background:white;
+    padding:18px 22px;
+    border-radius:12px;
+    margin-bottom:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+
+.topbar h1{
+    font-size:24px;
+    color:var(--dashboard);
+}
+
+.topbar p{
+    color:#777;
+    font-size:13px;
+    margin-top:4px;
+}
+
+.topbar-right{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.date{
+    font-size:13px;
+    color:#666;
+}
+
+.logout-btn{
+    border:none;
+    background:#fee2e2;
+    color:#b91c1c;
+    padding:9px 14px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.2s;
+}
+
+.logout-btn:hover{
+    background:#fecaca;
+}
+
+/* ================= DASHBOARD ================= */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+    border-left:5px solid var(--dashboard);
+}
+
+.card h3{
+    font-size:13px;
+    color:#777;
+    margin-bottom:8px;
+}
+
+.card .number{
+    font-size:28px;
+    font-weight:bold;
+}
+
+.card-total{
+    border-left-color:var(--dashboard);
+}
+
+.card-total .number{
+    color:var(--dashboard);
+}
+
+.card-phd{
+    border-left-color:var(--phd);
+}
+
+.card-phd .number{
+    color:var(--phd);
+}
+
+.card-maed{
+    border-left-color:var(--maed);
+}
+
+.card-maed .number{
+    color:#2581a8;
+}
+
+.card-mba{
+    border-left-color:var(--mba);
+}
+
+.card-mba .number{
+    color:var(--mba);
+}
+
+.card-mpa{
+    border-left-color:var(--mpa);
+}
+
+.card-mpa .number{
+    color:var(--mpa);
+}
+
+.card-mscj{
+    border-left-color:var(--mscj);
+}
+
+.card-mscj .number{
+    color:#b64c4c;
+}
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.section{
+    background:white;
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+
+.section-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:18px;
+}
+
+.section-header h2{
+    color:var(--dashboard);
+    font-size:20px;
+}
+
+.header-buttons{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.btn{
+    border:none;
+    padding:10px 15px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.btn-primary{
+    background:var(--dashboard);
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#0b5aa5;
+}
+
+.btn-secondary{
+    background:#e9edf2;
+    color:#333;
+}
+
+.btn-edit{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.btn-archive{
+    background:#fde2e2;
+    color:#b42318;
+}
+
+.btn-archive:hover{
+    background:#f8caca;
+}
+
+.btn-restore{
+    background:#d9f7e6;
+    color:#137333;
+}
+
+.btn-bulk-archive{
+    display:none;
+    background:#b42318;
+    color:white;
+}
+
+.btn-bulk-archive:hover{
+    background:#8f1d14;
+}
+
+.btn-bulk-archive.show{
+    display:inline-block;
+}
+
+.btn-bulk-restore{
+    display:none;
+    background:#137333;
+    color:white;
+}
+
+.btn-bulk-restore:hover{
+    background:#0f5c29;
+}
+
+.btn-bulk-restore.show{
+    display:inline-block;
+}
+
+.search-box{
+    width:100%;
+    padding:11px 13px;
+    border:1px solid #ddd;
+    border-radius:7px;
+    margin-bottom:15px;
+    outline:none;
+}
+
+.search-box:focus{
+    border-color:#0b5aa5;
+}
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1150px;
+}
+
+thead{
+    background:var(--dashboard);
+    color:white;
+}
+
+th,
+td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+    font-size:13px;
+    vertical-align:middle;
+}
+
+tbody tr:hover{
+    background:#f8fafc;
+}
+
+.checkbox-cell{
+    width:45px;
+    text-align:center !important;
+}
+
+.student-checkbox,
+.select-all-checkbox{
+    appearance:none;
+    -webkit-appearance:none;
+    width:19px;
+    height:19px;
+    border:2px solid #9aa7b5;
+    border-radius:5px;
+    background:white;
+    cursor:pointer;
+    position:relative;
+    vertical-align:middle;
+    transition:.15s ease;
+}
+
+.student-checkbox:hover,
+.select-all-checkbox:hover{
+    border-color:#1976d2;
+}
+
+.student-checkbox:checked,
+.select-all-checkbox:checked{
+    background:#1976d2;
+    border-color:#1976d2;
+}
+
+.student-checkbox:checked::after,
+.select-all-checkbox:checked::after{
+    content:"✓";
+    position:absolute;
+    color:white;
+    font-size:14px;
+    font-weight:bold;
+    left:2px;
+    top:-1px;
+}
+
+.select-all-checkbox:indeterminate{
+    background:#1976d2;
+    border-color:#1976d2;
+}
+
+.select-all-checkbox:indeterminate::after{
+    content:"−";
+    position:absolute;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    left:2px;
+    top:-4px;
+}
+
+.selected-row{
+    background:#eef6ff !important;
+}
+
+.program-badge{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:20px;
+    font-weight:bold;
+    font-size:11px;
+}
+
+.program-phd{
+    background:var(--phd);
+    color:white;
+}
+
+.program-maed{
+    background:var(--maed);
+    color:#073b72;
+}
+
+.program-mba{
+    background:var(--mba);
+    color:white;
+}
+
+.program-mpa{
+    background:var(--mpa);
+    color:white;
+}
+
+.program-mscj{
+    background:var(--mscj);
+    color:#7a1f1f;
+}
+
+.extension-badge{
+    display:inline-block;
+    background:#eef2f7;
+    color:#073b72;
+    border:1px solid #d7e0ea;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.extension-not-assigned{
+    display:inline-block;
+    background:#f1f1f1;
+    color:#888;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:10px;
+}
+
+.status-badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:15px;
+    font-size:11px;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.status-active{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.status-completed{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.status-onhold{
+    background:#fef3c7;
+    color:#a16207;
+}
+
+.status-dropped{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+.fee-box{
+    margin-top:3px;
+    line-height:1.6;
+}
+
+.fee-title{
+    font-weight:bold;
+    font-size:11px;
+    color:#555;
+}
+
+.payment-paid{
+    display:inline-block;
+    background:#dcfce7;
+    color:#15803d;
+    padding:4px 8px;
+    border-radius:12px;
+    font-size:10px;
+    font-weight:bold;
+    margin:2px;
+}
+
+.payment-unpaid{
+    display:inline-block;
+    background:#fee2e2;
+    color:#b91c1c;
+    padding:4px 8px;
+    border-radius:12px;
+    font-size:10px;
+    font-weight:bold;
+    margin:2px;
+}
+
+.progress-container{
+    width:130px;
+}
+
+.progress-bar{
+    width:100%;
+    height:8px;
+    background:#e5e7eb;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    background:#0b5aa5;
+    transition:.3s;
+}
+
+.progress-text{
+    font-size:10px;
+    color:#777;
+    margin-top:3px;
+}
+
+.empty{
+    text-align:center;
+    padding:50px 20px;
+    color:#888;
+}
+
+.empty-icon{
+    font-size:45px;
+    margin-bottom:10px;
+}
+
+.empty h3{
+    margin-bottom:5px;
+    color:#555;
+}
+
+.program-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.program-card{
+    padding:20px;
+    border-radius:12px;
+    transition:.2s;
+}
+
+.program-card:hover{
+    transform:translateY(-2px);
+}
+
+.program-card.phd{
+    background:var(--phd);
+    color:white;
+}
+
+.program-card.maed{
+    background:var(--maed);
+    color:#073b72;
+}
+
+.program-card.mba{
+    background:var(--mba);
+    color:white;
+}
+
+.program-card.mpa{
+    background:var(--mpa);
+    color:white;
+}
+
+.program-card.mscj{
+    background:var(--mscj);
+    color:#7a1f1f;
+}
+
+.program-card h3{
+    margin-bottom:8px;
+}
+
+.program-card p{
+    font-size:13px;
+    opacity:.9;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:1000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.55);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-content{
+    width:700px;
+    max-width:100%;
+    max-height:90vh;
+    overflow-y:auto;
+    background:white;
+    border-radius:12px;
+    padding:25px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.modal-header h2{
+    color:var(--dashboard);
+}
+
+.close{
+    font-size:25px;
+    cursor:pointer;
+    color:#777;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group.full{
+    grid-column:1 / -1;
+}
+
+.form-group label{
+    font-size:12px;
+    font-weight:bold;
+    color:#555;
+    margin-bottom:6px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:7px;
+    outline:none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:#0b5aa5;
+}
+
+.form-group textarea{
+    resize:vertical;
+    min-height:80px;
+}
+
+.modal-footer{
+    display:flex;
+    justify-content:flex-end;
+    gap:10px;
+    margin-top:20px;
+}
+
+.extension-section{
+    grid-column:1 / -1;
+    background:#f7f9fc;
+    border:1px solid #e2e6eb;
+    border-radius:10px;
+    padding:15px;
+}
+
+.extension-section h3{
+    font-size:14px;
+    color:var(--dashboard);
+    margin-bottom:12px;
+}
+
+.extension-section select{
+    width:100%;
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:7px;
+    outline:none;
+    background:white;
+}
+
+.fee-section{
+    background:#f7f9fc;
+    border:1px solid #e2e6eb;
+    border-radius:10px;
+    padding:15px;
+    grid-column:1 / -1;
+}
+
+.fee-section h3{
+    font-size:14px;
+    color:var(--dashboard);
+    margin-bottom:12px;
+}
+
+.fee-status-item{
+    display:flex;
+    flex-direction:column;
+}
+
+.fee-status-item label{
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:6px;
+    color:#555;
+}
+
+.fee-status-item select{
+    padding:10px;
+    border:1px solid #ddd;
+    border-radius:7px;
+    outline:none;
+    width:100%;
+}
+
+.auto-progress-info{
+    grid-column:1 / -1;
+    background:#eef6ff;
+    border-left:4px solid var(--dashboard);
+    padding:12px;
+    border-radius:7px;
+    font-size:12px;
+    color:#345;
+}
+
+.auto-progress-info strong{
+    color:var(--dashboard);
+}
+
+.save-message{
+    position:fixed;
+    right:25px;
+    bottom:25px;
+    background:#15803d;
+    color:white;
+    padding:12px 18px;
+    border-radius:8px;
+    box-shadow:0 4px 15px rgba(0,0,0,.2);
+    font-size:13px;
+    font-weight:bold;
+    opacity:0;
+    transform:translateY(20px);
+    pointer-events:none;
+    transition:.3s;
+    z-index:2000;
+}
+
+.save-message.show{
+    opacity:1;
+    transform:translateY(0);
+}
+
+@media(max-width:1100px){
+    .cards{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+
+@media(max-width:800px){
+    .sidebar{
+        width:210px;
+    }
+
+    .main{
+        margin-left:210px;
+    }
+
+    .cards{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .program-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:600px){
+    .sidebar{
+        position:relative;
+        width:100%;
+        height:auto;
+    }
+
+    .main{
+        margin-left:0;
+    }
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .topbar{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+    }
+
+    .topbar-right{
+        width:100%;
+        justify-content:space-between;
+    }
+
+    .section-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .header-buttons{
+        width:100%;
+        flex-wrap:wrap;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= LOGIN SCREEN ================= -->
+
+<div id="loginScreen" class="login-screen">
+
+    <div class="login-box">
+
+        <div class="login-logo">
+
+            <div class="login-icon">
+                🎓
+            </div>
+
+            <h1>Graduate Tracker</h1>
+
+            <p>
+                Student Management System
+            </p>
+
+        </div>
+
+        <div id="loginError" class="login-error">
+            Invalid username or password.
+        </div>
+
+        <form onsubmit="login(event)">
+
+            <div class="login-form-group">
+
+                <label>
+                    Username
+                </label>
+
+                <input
+                    type="text"
+                    id="loginUsername"
+                    class="login-input"
+                    placeholder="Enter username"
+                    autocomplete="username"
+                    required>
+
+            </div>
+
+            <div class="login-form-group">
+
+                <label>
+                    Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        class="login-input"
+                        placeholder="Enter password"
+                        autocomplete="current-password"
+                        required>
+
+                </div>
+
+                <label class="show-password">
+
+                    <input
+                        type="checkbox"
+                        id="showPassword"
+                        onchange="togglePassword()">
+
+                    <span>
+                        Show Password
+                    </span>
+
+                </label>
+
+            </div>
+
+            <button
+                type="submit"
+                class="login-button">
+
+                🔐 Login
+
+            </button>
+
+        </form>
+
+        <div class="login-footer">
+            Graduate Student Tracking System
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= APPLICATION ================= -->
+
+<div id="app" class="app hidden">
+
+<div class="sidebar">
+
+    <div class="logo">
+        <h2>Graduate Tracker</h2>
+        <p>Student Management System</p>
+    </div>
+
+    <button class="menu-btn menu-dashboard"
+        onclick="showPage('dashboard',this)">
+        📊 Dashboard
+    </button>
+
+    <button class="menu-btn menu-normal"
+        onclick="showPage('students',this)">
+        👨‍🎓 Student Tracking
+    </button>
+
+    <button class="menu-btn menu-normal"
+        onclick="showPage('archive',this)">
+        🗄️ Archive
+    </button>
+
+    <div class="menu-title">
+        Programs
+    </div>
+
+    <button class="menu-btn menu-phd"
+        onclick="filterProgram('PhD',this)">
+        PhD
+    </button>
+
+    <button class="menu-btn menu-maed"
+        onclick="filterProgram('MAEd',this)">
+        MAEd
+    </button>
+
+    <button class="menu-btn menu-mba"
+        onclick="filterProgram('MBA',this)">
+        MBA
+    </button>
+
+    <button class="menu-btn menu-mpa"
+        onclick="filterProgram('MPA',this)">
+        MPA
+    </button>
+
+    <button class="menu-btn menu-mscj"
+        onclick="filterProgram('MSCJ',this)">
+        MSCJ
+    </button>
+
+    <div class="menu-title">
+        Information
+    </div>
+
+    <button class="menu-btn menu-normal"
+        onclick="showPage('programInfo',this)">
+        📚 Program Information
+    </button>
+
+</div>
+
+<div class="main">
+
+    <div class="topbar">
+
+        <div>
+            <h1>Graduate Student Tracking</h1>
+
+            <p>
+                Track graduate students, extension groups, fees and academic status.
+            </p>
+        </div>
+
+        <div class="topbar-right">
+
+            <div class="date" id="currentDate"></div>
+
+            <button
+                class="logout-btn"
+                onclick="logout()">
+
+                🚪 Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- DASHBOARD -->
+
+    <div id="dashboard" class="page active">
+
+        <div class="cards">
+
+            <div class="card card-total">
+                <h3>Total Students</h3>
+                <div class="number" id="totalStudents">0</div>
+            </div>
+
+            <div class="card card-phd">
+                <h3>PhD</h3>
+                <div class="number" id="phdCount">0</div>
+            </div>
+
+            <div class="card card-maed">
+                <h3>MAEd</h3>
+                <div class="number" id="maedCount">0</div>
+            </div>
+
+            <div class="card card-mba">
+                <h3>MBA</h3>
+                <div class="number" id="mbaCount">0</div>
+            </div>
+
+            <div class="card card-mpa">
+                <h3>MPA</h3>
+                <div class="number" id="mpaCount">0</div>
+            </div>
+
+            <div class="card card-mscj">
+                <h3>MSCJ</h3>
+                <div class="number" id="mscjCount">0</div>
+            </div>
+
+        </div>
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Student Records</h2>
+
+                <div class="header-buttons">
+
+                    <button
+                        id="dashboardArchiveSelected"
+                        class="btn btn-bulk-archive"
+                        onclick="archiveSelected()">
+                        🗄️ Archive Selected
+                    </button>
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="openModal()">
+                        + Add Student
+                    </button>
+
+                </div>
+
+            </div>
+
+            <input
+                type="text"
+                id="dashboardSearch"
+                class="search-box"
+                placeholder="Search student, program or extension group..."
+                oninput="displayDashboardTable()">
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+
+                            <th class="checkbox-cell">
+
+                                <input
+                                    type="checkbox"
+                                    id="dashboardSelectAll"
+                                    class="select-all-checkbox"
+                                    title="Select All"
+                                    onchange="toggleSelectAll('dashboard')">
+
+                            </th>
+
+                            <th>Student Name</th>
+                            <th>Program</th>
+                            <th>Extension Group</th>
+                            <th>Trimester</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody id="dashboardTable"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- STUDENTS -->
+
+    <div id="students" class="page">
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2 id="studentPageTitle">
+                    All Student Records
+                </h2>
+
+                <div class="header-buttons">
+
+                    <button
+                        id="studentArchiveSelected"
+                        class="btn btn-bulk-archive"
+                        onclick="archiveSelected()">
+                        🗄️ Archive Selected
+                    </button>
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="openModal()">
+                        + Add Student
+                    </button>
+
+                </div>
+
+            </div>
+
+            <input
+                type="text"
+                id="studentSearch"
+                class="search-box"
+                placeholder="Search student, program or extension group..."
+                oninput="displayStudents()">
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+
+                            <th class="checkbox-cell">
+
+                                <input
+                                    type="checkbox"
+                                    id="studentSelectAll"
+                                    class="select-all-checkbox"
+                                    title="Select All"
+                                    onchange="toggleSelectAll('students')">
+
+                            </th>
+
+                            <th>Student Name</th>
+                            <th>Program</th>
+                            <th>Extension Group</th>
+                            <th>Trimester</th>
+                            <th>Status</th>
+                            <th>Progress</th>
+                            <th>Notes</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody id="studentTable"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ARCHIVE -->
+
+    <div id="archive" class="page">
+
+        <div class="section">
+
+            <div class="section-header">
+
+                <h2>Archived Students</h2>
+
+                <div class="header-buttons">
+
+                    <button
+                        id="archiveRestoreSelected"
+                        class="btn btn-bulk-restore"
+                        onclick="restoreSelectedArchived()">
+                        ↩️ Restore Selected
+                    </button>
+
+                </div>
+
+            </div>
+
+            <input
+                type="text"
+                id="archiveSearch"
+                class="search-box"
+                placeholder="Search archived student..."
+                oninput="displayArchive()">
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+
+                            <th class="checkbox-cell">
+
+                                <input
+                                    type="checkbox"
+                                    id="archiveSelectAll"
+                                    class="select-all-checkbox"
+                                    title="Select All"
+                                    onchange="toggleArchiveSelectAll()">
+
+                            </th>
+
+                            <th>Student Name</th>
+                            <th>Program</th>
+                            <th>Extension Group</th>
+                            <th>Trimester</th>
+                            <th>Status</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody id="archiveTable"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PROGRAM INFORMATION -->
+
+    <div id="programInfo" class="page">
+
+        <div class="section">
+
+            <div class="section-header">
+                <h2>Graduate Programs</h2>
+            </div>
+
+            <div class="program-grid">
+
+                <div class="program-card phd">
+                    <h3>PhD</h3>
+                    <p>Doctor of Philosophy graduate program.</p>
+                </div>
+
+                <div class="program-card maed">
+                    <h3>MAEd</h3>
+                    <p>Master of Arts in Education.</p>
+                </div>
+
+                <div class="program-card mba">
+                    <h3>MBA</h3>
+                    <p>Master of Business Administration.</p>
+                </div>
+
+                <div class="program-card mpa">
+                    <h3>MPA</h3>
+                    <p>Master of Public Administration.</p>
+                </div>
+
+                <div class="program-card mscj">
+                    <h3>MSCJ</h3>
+                    <p>Master of Science in Criminal Justice.</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+<div id="saveMessage" class="save-message">
+    ✓ Data saved automatically
+</div>
+
+<!-- MODAL -->
+
+<div id="studentModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2 id="modalTitle">
+                Add Student
+            </h2>
+
+            <span class="close" onclick="closeModal">
+                &times;
+            </span>
+
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Student Name</label>
+
+                <input
+                    type="text"
+                    id="studentName"
+                    placeholder="Enter student name">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Program</label>
+
+                <select id="studentProgram">
+
+                    <option value="">Select Program</option>
+                    <option value="PhD">PhD</option>
+                    <option value="MAEd">MAEd</option>
+                    <option value="MBA">MBA</option>
+                    <option value="MPA">MPA</option>
+                    <option value="MSCJ">MSCJ</option>
+
+                </select>
+
+            </div>
+
+            <div class="extension-section">
+
+                <h3>EXTENSION GROUP</h3>
+
+                <select id="extensionGroup">
+
+                    <option value="">Select Extension Group</option>
+                    <option value="TAGAYTAY GROUP">TAGAYTAY GROUP</option>
+                    <option value="IN CAMPUS">IN CAMPUS</option>
+                    <option value="WESTERN GROUP">WESTERN GROUP</option>
+                    <option value="DECIMO GROUP">DECIMO GROUP</option>
+                    <option value="MEL GROUP">MEL GROUP</option>
+                    <option value="DR. GELYN GROUP">DR. GELYN GROUP</option>
+                    <option value="CTSC">CTSC</option>
+                    <option value="POILE">POILE</option>
+                    <option value="AMISCOSA GROUP">AMISCOSA GROUP</option>
+                    <option value="MALAY GROUP">MALAY GROUP</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Trimester</label>
+
+                <input
+                    type="text"
+                    id="studentTrimester"
+                    placeholder="Example: 1st Trimester">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Academic Status</label>
+
+                <select id="studentStatus">
+
+                    <option value="Active">Active</option>
+                    <option value="Completed">Completed</option>
+                    <option value="On Hold">On Hold</option>
+                    <option value="Dropped">Dropped</option>
+
+                </select>
+
+            </div>
+
+            <div class="fee-section">
+
+                <h3>Fee Status</h3>
+
+                <div class="form-group">
+
+                    <label>Fee Type</label>
+
+                    <select id="feeType" onchange="updateFeeFields()">
+
+                        <option value="Tuition Fee">
+                            Tuition Fee
+                        </option>
+
+                        <option value="Graduation Fee">
+                            Graduation Fee
+                        </option>
+
+                        <option value="Both Tuition & Graduation Fee">
+                            Both Tuition & Graduation Fee
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <br>
+
+                <div
+                    id="tuitionStatusContainer"
+                    class="fee-status-item">
+
+                    <label>Tuition Fee Payment</label>
+
+                    <select
+                        id="tuitionPayment"
+                        onchange="updateAutoProgressPreview()">
+
+                        <option value="Paid">Paid</option>
+
+                        <option value="Not Yet Paid">
+                            Not Yet Paid
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <br>
+
+                <div
+                    id="graduationStatusContainer"
+                    class="fee-status-item"
+                    style="display:none;">
+
+                    <label>Graduation Fee Payment</label>
+
+                    <select
+                        id="graduationPayment"
+                        onchange="updateAutoProgressPreview()">
+
+                        <option value="Paid">Paid</option>
+
+                        <option value="Not Yet Paid">
+                            Not Yet Paid
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="auto-progress-info">
+
+                <strong>Automatic Progress:</strong>
+
+                <span id="autoProgressPreview">
+                    0%
+                </span>
+
+                <br>
+
+                <small>
+                    Progress is automatically calculated from the selected fee payment status.
+                </small>
+
+            </div>
+
+            <div class="form-group full">
+
+                <label>Notes</label>
+
+                <textarea
+                    id="studentNotes"
+                    placeholder="Enter notes..."></textarea>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                class="btn btn-secondary"
+                onclick="closeModal()">
+                Cancel
+            </button>
+
+            <button
+                class="btn btn-primary"
+                onclick="saveStudent()">
+                Save Student
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+/* ================= LOGIN ================= */
+
+const LOGIN_USERNAME = "admin";
+const LOGIN_PASSWORD = "admin123";
+
+
+function login(event){
+
+    event.preventDefault();
+
+    const username =
+        document.getElementById(
+            "loginUsername"
+        ).value.trim();
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        ).value;
+
+    const error =
+        document.getElementById(
+            "loginError"
+        );
+
+    if(
+        username === LOGIN_USERNAME &&
+        password === LOGIN_PASSWORD
+    ){
+
+        sessionStorage.setItem(
+            "graduateTrackerLoggedIn",
+            "true"
+        );
+
+        error.classList.remove("show");
+
+        document
+            .getElementById("loginScreen")
+            .classList.add("hidden");
+
+        document
+            .getElementById("app")
+            .classList.remove("hidden");
+
+    }
+    else{
+
+        error.classList.add("show");
+
+        document
+            .getElementById("loginPassword")
+            .value = "";
+
+    }
+}
+
+
+function togglePassword(){
+
+    const password =
+        document.getElementById(
+            "loginPassword"
+        );
+
+    const checkbox =
+        document.getElementById(
+            "showPassword"
+        );
+
+    if(checkbox.checked){
+
+        password.type = "text";
+
+    }
+    else{
+
+        password.type = "password";
+
+    }
+}
+
+
+function logout(){
+
+    if(
+        !confirm(
+            "Are you sure you want to logout?"
+        )
+    ){
+
+        return;
+
+    }
+
+    sessionStorage.removeItem(
+        "graduateTrackerLoggedIn"
+    );
+
+    document
+        .getElementById("app")
+        .classList.add("hidden");
+
+    document
+        .getElementById("loginScreen")
+        .classList.remove("hidden");
+
+    document.getElementById(
+        "loginUsername"
+    ).value = "";
+
+    document.getElementById(
+        "loginPassword"
+    ).value = "";
+
+    document.getElementById(
+        "showPassword"
+    ).checked = false;
+
+    document.getElementById(
+        "loginPassword"
+    ).type = "password";
+
+    document.getElementById(
+        "loginError"
+    ).classList.remove("show");
+
+}
+
+
+/* ================= CHECK LOGIN ================= */
+
+function checkLogin(){
+
+    const loggedIn =
+        sessionStorage.getItem(
+            "graduateTrackerLoggedIn"
+        );
+
+    if(loggedIn === "true"){
+
+        document
+            .getElementById("loginScreen")
+            .classList.add("hidden");
+
+        document
+            .getElementById("app")
+            .classList.remove("hidden");
+
+    }
+    else{
+
+        document
+            .getElementById("loginScreen")
+            .classList.remove("hidden");
+
+        document
+            .getElementById("app")
+            .classList.add("hidden");
+
+    }
+}
+
+
+/* ================= DATA ================= */
+
+let students =
+    JSON.parse(
+        localStorage.getItem("graduateStudents")
+    ) || [];
+
+let archivedStudents =
+    JSON.parse(
+        localStorage.getItem("archivedStudents")
+    ) || [];
+
+let editIndex = -1;
+
+let currentProgramFilter = "";
+
+let selectedStudents = new Set();
+
+let selectedArchived = new Set();
+
+
+function saveData(){
+
+    localStorage.setItem(
+        "graduateStudents",
+        JSON.stringify(students)
+    );
+
+    localStorage.setItem(
+        "archivedStudents",
+        JSON.stringify(archivedStudents)
+    );
+
+    showSaveMessage();
+}
+
+
+function saveDataWithoutMessage(){
+
+    localStorage.setItem(
+        "graduateStudents",
+        JSON.stringify(students)
+    );
+
+    localStorage.setItem(
+        "archivedStudents",
+        JSON.stringify(archivedStudents)
+    );
+}
+
+
+let saveMessageTimer;
+
+function showSaveMessage(){
+
+    const message =
+        document.getElementById(
+            "saveMessage"
+        );
+
+    message.classList.add("show");
+
+    clearTimeout(saveMessageTimer);
+
+    saveMessageTimer =
+        setTimeout(
+            () => {
+                message.classList.remove("show");
+            },
+            1500
+        );
+}
+
+
+document.getElementById(
+    "currentDate"
+).textContent =
+    new Date().toLocaleDateString(
+        "en-US",
+        {
+            weekday:"long",
+            year:"numeric",
+            month:"long",
+            day:"numeric"
+        }
+    );
+
+
+/* ================= PAGE NAVIGATION ================= */
+
+function showPage(pageId,button){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(
+            page =>
+                page.classList.remove("active")
+        );
+
+    document
+        .getElementById(pageId)
+        .classList.add("active");
+
+    if(pageId === "dashboard"){
+
+        currentProgramFilter = "";
+
+        displayDashboard();
+
+    }
+
+    if(pageId === "students"){
+
+        displayStudents();
+
+    }
+
+    if(pageId === "archive"){
+
+        displayArchive();
+
+    }
+}
+
+
+function filterProgram(program,button){
+
+    currentProgramFilter =
+        program;
+
+    document
+        .querySelectorAll(".page")
+        .forEach(
+            page =>
+                page.classList.remove("active")
+        );
+
+    document
+        .getElementById("students")
+        .classList.add("active");
+
+    document.getElementById(
+        "studentPageTitle"
+    ).textContent =
+        program + " Student Records";
+
+    displayStudents();
+}
+
+
+/* ================= DISPLAY HELPERS ================= */
+
+function getProgramClass(program){
+
+    const classes = {
+
+        "PhD":"program-phd",
+        "MAEd":"program-maed",
+        "MBA":"program-mba",
+        "MPA":"program-mpa",
+        "MSCJ":"program-mscj"
+
+    };
+
+    return classes[program] || "";
+}
+
+
+function getStatusClass(status){
+
+    const classes = {
+
+        "Active":"status-active",
+        "Completed":"status-completed",
+        "On Hold":"status-onhold",
+        "Dropped":"status-dropped"
+
+    };
+
+    return classes[status] || "status-active";
+}
+
+
+function displayExtensionGroup(group){
+
+    if(!group){
+
+        return `
+            <span class="extension-not-assigned">
+                Not Assigned
+            </span>
+        `;
+
+    }
+
+    return `
+        <span class="extension-badge">
+            ${escapeHTML(group)}
+        </span>
+    `;
+
+}
+
+
+function paymentBadge(status){
+
+    if(status === "Paid"){
+
+        return `
+            <span class="payment-paid">
+                ✓ Paid
+            </span>
+        `;
+
+    }
+
+    return `
+        <span class="payment-unpaid">
+            ✕ Not Yet Paid
+        </span>
+    `;
+
+}
+
+
+function getAutoProgress(student){
+
+    if(student.feeType === "Tuition Fee"){
+
+        return student.tuitionPayment === "Paid"
+            ? 100
+            : 0;
+    }
+
+    if(student.feeType === "Graduation Fee"){
+
+        return student.graduationPayment === "Paid"
+            ? 100
+            : 0;
+    }
+
+    if(
+        student.feeType ===
+        "Both Tuition & Graduation Fee"
+    ){
+
+        const tuitionPaid =
+            student.tuitionPayment === "Paid";
+
+        const graduationPaid =
+            student.graduationPayment === "Paid";
+
+        if(tuitionPaid && graduationPaid){
+            return 100;
+        }
+
+        if(tuitionPaid || graduationPaid){
+            return 50;
+        }
+
+        return 0;
+    }
+
+    return 0;
+}
+
+
+function displayProgress(student){
+
+    const value =
+        getAutoProgress(student);
+
+    return `
+        <div class="progress-container">
+
+            <div class="progress-bar">
+
+                <div
+                    class="progress-fill"
+                    style="width:${value}%">
+                </div>
+
+            </div>
+
+            <div class="progress-text">
+                ${value}%
+            </div>
+
+        </div>
+    `;
+}
+
+
+function displayStatus(student){
+
+    let html = `
+
+        <span
+            class="status-badge ${getStatusClass(student.status)}">
+
+            ${escapeHTML(student.status)}
+
+        </span>
+
+    `;
+
+    html += `<div class="fee-box">`;
+
+    if(student.feeType === "Tuition Fee"){
+
+        html += `
+            <div class="fee-title">
+                Tuition Fee
+            </div>
+            ${paymentBadge(student.tuitionPayment)}
+        `;
+
+    }
+
+    else if(student.feeType === "Graduation Fee"){
+
+        html += `
+            <div class="fee-title">
+                Graduation Fee
+            </div>
+            ${paymentBadge(student.graduationPayment)}
+        `;
+
+    }
+
+    else{
+
+        html += `
+            <div class="fee-title">
+                Tuition Fee
+            </div>
+
+            ${paymentBadge(student.tuitionPayment)}
+
+            <div
+                class="fee-title"
+                style="margin-top:4px;">
+                Graduation Fee
+            </div>
+
+            ${paymentBadge(student.graduationPayment)}
+        `;
+
+    }
+
+    html += `</div>`;
+
+    return html;
+}
+
+
+/* ================= SEARCH ================= */
+
+function getDashboardFilteredStudents(){
+
+    const input =
+        document.getElementById(
+            "dashboardSearch"
+        );
+
+    const search =
+        input
+        ? input.value.toLowerCase().trim()
+        : "";
+
+    return students.filter(student => {
+
+        const text = (
+
+            student.name +
+            " " +
+            student.program +
+            " " +
+            (student.extensionGroup || "") +
+            " " +
+            student.trimester
+
+        ).toLowerCase();
+
+        return text.includes(search);
+
+    });
+}
+
+
+function getStudentsFilteredStudents(){
+
+    const input =
+        document.getElementById(
+            "studentSearch"
+        );
+
+    const search =
+        input
+        ? input.value.toLowerCase().trim()
+        : "";
+
+    return students.filter(student => {
+
+        if(
+            currentProgramFilter &&
+            student.program !== currentProgramFilter
+        ){
+
+            return false;
+
+        }
+
+        const text = (
+
+            student.name +
+            " " +
+            student.program +
+            " " +
+            (student.extensionGroup || "") +
+            " " +
+            student.trimester
+
+        ).toLowerCase();
+
+        return text.includes(search);
+
+    });
+}
+
+
+/* ================= STUDENT SELECTION ================= */
+
+function toggleStudentSelection(index,checkbox){
+
+    if(checkbox.checked){
+
+        selectedStudents.add(index);
+
+    }
+    else{
+
+        selectedStudents.delete(index);
+
+    }
+
+    updateSelectAllState();
+
+    displayArchiveButton();
+}
+
+
+function toggleSelectAll(source){
+
+    let filtered = [];
+
+    let checkbox;
+
+    if(source === "dashboard"){
+
+        filtered =
+            getDashboardFilteredStudents();
+
+        checkbox =
+            document.getElementById(
+                "dashboardSelectAll"
+            );
+
+    }
+    else{
+
+        filtered =
+            getStudentsFilteredStudents();
+
+        checkbox =
+            document.getElementById(
+                "studentSelectAll"
+            );
+
+    }
+
+    filtered.forEach(student => {
+
+        const index =
+            students.indexOf(student);
+
+        if(checkbox.checked){
+
+            selectedStudents.add(index);
+
+        }
+        else{
+
+            selectedStudents.delete(index);
+
+        }
+
+    });
+
+    if(source === "dashboard"){
+
+        displayDashboardTable();
+
+    }
+    else{
+
+        displayStudents();
+
+    }
+
+    displayArchiveButton();
+}
+
+
+function displayArchiveButton(){
+
+    const dashboardButton =
+        document.getElementById(
+            "dashboardArchiveSelected"
+        );
+
+    const studentButton =
+        document.getElementById(
+            "studentArchiveSelected"
+        );
+
+    const hasSelection =
+        selectedStudents.size > 0;
+
+    if(dashboardButton){
+
+        dashboardButton.classList.toggle(
+            "show",
+            hasSelection
+        );
+
+    }
+
+    if(studentButton){
+
+        studentButton.classList.toggle(
+            "show",
+            hasSelection
+        );
+
+    }
+}
+
+
+function archiveSelected(){
+
+    if(selectedStudents.size === 0){
+        return;
+    }
+
+    const count =
+        selectedStudents.size;
+
+    if(
+        !confirm(
+            "Are you sure you want to archive " +
+            count +
+            " selected student" +
+            (count > 1 ? "s" : "") +
+            "?"
+        )
+    ){
+        return;
+    }
+
+    const indexes =
+        Array.from(selectedStudents)
+            .sort((a,b) => b-a);
+
+    indexes.forEach(index => {
+
+        if(students[index]){
+
+            archivedStudents.push(
+                students[index]
+            );
+
+            students.splice(index,1);
+
+        }
+
+    });
+
+    selectedStudents.clear();
+
+    saveData();
+
+    displayDashboard();
+    displayStudents();
+    displayArchive();
+    displayArchiveButton();
+}
+
+
+function updateSelectAllState(){
+
+    updateOneSelectAll(
+        "dashboard",
+        getDashboardFilteredStudents()
+    );
+
+    updateOneSelectAll(
+        "students",
+        getStudentsFilteredStudents()
+    );
+
+}
+
+
+function updateOneSelectAll(source,filtered){
+
+    const checkbox =
+        document.getElementById(
+            source === "dashboard"
+            ? "dashboardSelectAll"
+            : "studentSelectAll"
+        );
+
+    if(!checkbox){
+        return;
+    }
+
+    if(filtered.length === 0){
+
+        checkbox.checked = false;
+        checkbox.indeterminate = false;
+
+        return;
+    }
+
+    const selectedCount =
+        filtered.filter(
+            student =>
+                selectedStudents.has(
+                    students.indexOf(student)
+                )
+        ).length;
+
+    checkbox.checked =
+        selectedCount === filtered.length;
+
+    checkbox.indeterminate =
+        selectedCount > 0 &&
+        selectedCount < filtered.length;
+
+}
+
+
+/* ================= DASHBOARD ================= */
+
+function displayDashboard(){
+
+    document.getElementById(
+        "totalStudents"
+    ).textContent =
+        students.length;
+
+    document.getElementById(
+        "phdCount"
+    ).textContent =
+        students.filter(
+            s => s.program === "PhD"
+        ).length;
+
+    document.getElementById(
+        "maedCount"
+    ).textContent =
+        students.filter(
+            s => s.program === "MAEd"
+        ).length;
+
+    document.getElementById(
+        "mbaCount"
+    ).textContent =
+        students.filter(
+            s => s.program === "MBA"
+        ).length;
+
+    document.getElementById(
+        "mpaCount"
+    ).textContent =
+        students.filter(
+            s => s.program === "MPA"
+        ).length;
+
+    document.getElementById(
+        "mscjCount"
+    ).textContent =
+        students.filter(
+            s => s.program === "MSCJ"
+        ).length;
+
+    displayDashboardTable();
+}
+
+
+function displayDashboardTable(){
+
+    const tbody =
+        document.getElementById(
+            "dashboardTable"
+        );
+
+    const filtered =
+        getDashboardFilteredStudents();
+
+    if(filtered.length === 0){
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8">
+                    <div class="empty">
+                        <div class="empty-icon">📋</div>
+                        <h3>No Student Records</h3>
+                        <p>Click "Add Student" to create a record.</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        updateSelectAllState();
+        displayArchiveButton();
+
+        return;
+    }
+
+    tbody.innerHTML =
+        filtered.map(student => {
+
+            const index =
+                students.indexOf(student);
+
+            const checked =
+                selectedStudents.has(index)
+                ? "checked"
+                : "";
+
+            const selected =
+                selectedStudents.has(index)
+                ? "selected-row"
+                : "";
+
+            return `
+                <tr class="${selected}">
+
+                    <td class="checkbox-cell">
+
+                        <input
+                            type="checkbox"
+                            class="student-checkbox"
+                            ${checked}
+                            onchange="toggleStudentSelection(${index},this)">
+
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(student.name)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span
+                            class="program-badge ${getProgramClass(student.program)}">
+                            ${escapeHTML(student.program)}
+                        </span>
+                    </td>
+
+                    <td>
+                        ${displayExtensionGroup(student.extensionGroup)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(student.trimester)}
+                    </td>
+
+                    <td>
+                        ${displayStatus(student)}
+                    </td>
+
+                    <td>
+                        ${displayProgress(student)}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-edit"
+                            onclick="openModal(${index})">
+                            Edit
+                        </button>
+
+                        <button
+                            class="btn btn-archive"
+                            onclick="archiveStudent(${index})">
+                            Archive
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+
+    updateSelectAllState();
+    displayArchiveButton();
+}
+
+
+/* ================= STUDENT TABLE ================= */
+
+function displayStudents(){
+
+    const tbody =
+        document.getElementById(
+            "studentTable"
+        );
+
+    const filtered =
+        getStudentsFilteredStudents();
+
+    if(filtered.length === 0){
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9">
+                    <div class="empty">
+                        <div class="empty-icon">👨‍🎓</div>
+                        <h3>No Student Records</h3>
+                        <p>There are no students in this program.</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        updateSelectAllState();
+        displayArchiveButton();
+
+        return;
+    }
+
+    tbody.innerHTML =
+        filtered.map(student => {
+
+            const index =
+                students.indexOf(student);
+
+            const checked =
+                selectedStudents.has(index)
+                ? "checked"
+                : "";
+
+            const selected =
+                selectedStudents.has(index)
+                ? "selected-row"
+                : "";
+
+            return `
+                <tr class="${selected}">
+
+                    <td class="checkbox-cell">
+
+                        <input
+                            type="checkbox"
+                            class="student-checkbox"
+                            ${checked}
+                            onchange="toggleStudentSelection(${index},this)">
+
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(student.name)}
+                        </strong>
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="program-badge ${getProgramClass(student.program)}">
+                            ${escapeHTML(student.program)}
+                        </span>
+
+                    </td>
+
+                    <td>
+                        ${displayExtensionGroup(student.extensionGroup)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(student.trimester)}
+                    </td>
+
+                    <td>
+                        ${displayStatus(student)}
+                    </td>
+
+                    <td>
+                        ${displayProgress(student)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(student.notes || "-")}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-edit"
+                            onclick="openModal(${index})">
+                            Edit
+                        </button>
+
+                        <button
+                            class="btn btn-archive"
+                            onclick="archiveStudent(${index})">
+                            Archive
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+
+    updateSelectAllState();
+    displayArchiveButton();
+}
+
+
+/* ================= ARCHIVE ================= */
+
+function toggleArchivedSelection(index,checkbox){
+
+    if(checkbox.checked){
+
+        selectedArchived.add(index);
+
+    }
+    else{
+
+        selectedArchived.delete(index);
+
+    }
+
+    updateArchiveSelectAllState();
+    displayArchiveRestoreButton();
+}
+
+
+function toggleArchiveSelectAll(){
+
+    const checkbox =
+        document.getElementById(
+            "archiveSelectAll"
+        );
+
+    const input =
+        document.getElementById(
+            "archiveSearch"
+        );
+
+    const search =
+        input
+        ? input.value.toLowerCase().trim()
+        : "";
+
+    const filtered =
+        archivedStudents.filter(student => {
+
+            const text = (
+
+                student.name +
+                " " +
+                student.program +
+                " " +
+                (student.extensionGroup || "") +
+                " " +
+                student.trimester
+
+            ).toLowerCase();
+
+            return text.includes(search);
+
+        });
+
+    filtered.forEach(student => {
+
+        const index =
+            archivedStudents.indexOf(student);
+
+        if(checkbox.checked){
+
+            selectedArchived.add(index);
+
+        }
+        else{
+
+            selectedArchived.delete(index);
+
+        }
+
+    });
+
+    displayArchive();
+    displayArchiveRestoreButton();
+}
+
+
+function updateArchiveSelectAllState(){
+
+    const checkbox =
+        document.getElementById(
+            "archiveSelectAll"
+        );
+
+    if(!checkbox){
+        return;
+    }
+
+    const input =
+        document.getElementById(
+            "archiveSearch"
+        );
+
+    const search =
+        input
+        ? input.value.toLowerCase().trim()
+        : "";
+
+    const filtered =
+        archivedStudents.filter(student => {
+
+            const text = (
+
+                student.name +
+                " " +
+                student.program +
+                " " +
+                (student.extensionGroup || "") +
+                " " +
+                student.trimester
+
+            ).toLowerCase();
+
+            return text.includes(search);
+
+        });
+
+    if(filtered.length === 0){
+
+        checkbox.checked = false;
+        checkbox.indeterminate = false;
+
+        return;
+    }
+
+    const selectedCount =
+        filtered.filter(
+            student =>
+                selectedArchived.has(
+                    archivedStudents.indexOf(student)
+                )
+        ).length;
+
+    checkbox.checked =
+        selectedCount === filtered.length;
+
+    checkbox.indeterminate =
+        selectedCount > 0 &&
+        selectedCount < filtered.length;
+}
+
+
+function displayArchiveRestoreButton(){
+
+    const button =
+        document.getElementById(
+            "archiveRestoreSelected"
+        );
+
+    if(!button){
+        return;
+    }
+
+    button.classList.toggle(
+        "show",
+        selectedArchived.size > 0
+    );
+}
+
+
+function restoreSelectedArchived(){
+
+    if(selectedArchived.size === 0){
+        return;
+    }
+
+    const count =
+        selectedArchived.size;
+
+    if(
+        !confirm(
+            "Restore " +
+            count +
+            " selected student" +
+            (count > 1 ? "s" : "") +
+            "?"
+        )
+    ){
+        return;
+    }
+
+    const indexes =
+        Array.from(selectedArchived)
+            .sort((a,b) => b-a);
+
+    indexes.forEach(index => {
+
+        if(archivedStudents[index]){
+
+            students.push(
+                archivedStudents[index]
+            );
+
+            archivedStudents.splice(
+                index,
+                1
+            );
+
+        }
+
+    });
+
+    selectedArchived.clear();
+
+    saveData();
+
+    displayDashboard();
+    displayStudents();
+    displayArchive();
+    displayArchiveRestoreButton();
+}
+
+
+function displayArchive(){
+
+    const tbody =
+        document.getElementById(
+            "archiveTable"
+        );
+
+    const input =
+        document.getElementById(
+            "archiveSearch"
+        );
+
+    const search =
+        input
+        ? input.value.toLowerCase().trim()
+        : "";
+
+    const filtered =
+        archivedStudents.filter(student => {
+
+            const text = (
+
+                student.name +
+                " " +
+                student.program +
+                " " +
+                (student.extensionGroup || "") +
+                " " +
+                student.trimester
+
+            ).toLowerCase();
+
+            return text.includes(search);
+
+        });
+
+    if(filtered.length === 0){
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    <div class="empty">
+                        <div class="empty-icon">🗄️</div>
+                        <h3>Archive is Empty</h3>
+                        <p>Archived students will appear here.</p>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        updateArchiveSelectAllState();
+        displayArchiveRestoreButton();
+
+        return;
+    }
+
+    tbody.innerHTML =
+        filtered.map(student => {
+
+            const index =
+                archivedStudents.indexOf(student);
+
+            const checked =
+                selectedArchived.has(index)
+                ? "checked"
+                : "";
+
+            const selected =
+                selectedArchived.has(index)
+                ? "selected-row"
+                : "";
+
+            return `
+                <tr class="${selected}">
+
+                    <td class="checkbox-cell">
+
+                        <input
+                            type="checkbox"
+                            class="student-checkbox"
+                            ${checked}
+                            onchange="toggleArchivedSelection(${index},this)">
+
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHTML(student.name)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        <span
+                            class="program-badge ${getProgramClass(student.program)}">
+                            ${escapeHTML(student.program)}
+                        </span>
+                    </td>
+
+                    <td>
+                        ${displayExtensionGroup(student.extensionGroup)}
+                    </td>
+
+                    <td>
+                        ${escapeHTML(student.trimester)}
+                    </td>
+
+                    <td>
+                        ${displayStatus(student)}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-restore"
+                            onclick="restoreStudent(${index})">
+                            Restore
+                        </button>
+
+                    </td>
+
+                </tr>
+            `;
+
+        }).join("");
+
+    updateArchiveSelectAllState();
+    displayArchiveRestoreButton();
+}
+
+
+/* ================= MODAL ================= */
+
+function openModal(index = -1){
+
+    editIndex = index;
+
+    document
+        .getElementById("studentModal")
+        .classList.add("show");
+
+    if(index === -1){
+
+        document.getElementById(
+            "modalTitle"
+        ).textContent =
+            "Add Student";
+
+        document.getElementById(
+            "studentName"
+        ).value = "";
+
+        document.getElementById(
+            "studentProgram"
+        ).value = "";
+
+        document.getElementById(
+            "extensionGroup"
+        ).value = "";
+
+        document.getElementById(
+            "studentTrimester"
+        ).value = "";
+
+        document.getElementById(
+            "studentStatus"
+        ).value = "Active";
+
+        document.getElementById(
+            "feeType"
+        ).value = "Tuition Fee";
+
+        document.getElementById(
+            "tuitionPayment"
+        ).value = "Not Yet Paid";
+
+        document.getElementById(
+            "graduationPayment"
+        ).value = "Not Yet Paid";
+
+        document.getElementById(
+            "studentNotes"
+        ).value = "";
+
+        updateFeeFields();
+
+        return;
+    }
+
+    const student =
+        students[index];
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        "Edit Student";
+
+    document.getElementById(
+        "studentName"
+    ).value =
+        student.name;
+
+    document.getElementById(
+        "studentProgram"
+    ).value =
+        student.program;
+
+    document.getElementById(
+        "extensionGroup"
+    ).value =
+        student.extensionGroup || "";
+
+    document.getElementById(
+        "studentTrimester"
+    ).value =
+        student.trimester;
+
+    document.getElementById(
+        "studentStatus"
+    ).value =
+        student.status;
+
+    document.getElementById(
+        "feeType"
+    ).value =
+        student.feeType || "Tuition Fee";
+
+    document.getElementById(
+        "tuitionPayment"
+    ).value =
+        student.tuitionPayment || "Not Yet Paid";
+
+    document.getElementById(
+        "graduationPayment"
+    ).value =
+        student.graduationPayment || "Not Yet Paid";
+
+    document.getElementById(
+        "studentNotes"
+    ).value =
+        student.notes || "";
+
+    updateFeeFields();
+}
+
+
+function closeModal(){
+
+    document
+        .getElementById("studentModal")
+        .classList.remove("show");
+
+    editIndex = -1;
+}
+
+
+function updateFeeFields(){
+
+    const feeType =
+        document.getElementById(
+            "feeType"
+        ).value;
+
+    const tuition =
+        document.getElementById(
+            "tuitionStatusContainer"
+        );
+
+    const graduation =
+        document.getElementById(
+            "graduationStatusContainer"
+        );
+
+    if(feeType === "Tuition Fee"){
+
+        tuition.style.display = "flex";
+        graduation.style.display = "none";
+
+    }
+
+    else if(feeType === "Graduation Fee"){
+
+        tuition.style.display = "none";
+        graduation.style.display = "flex";
+
+    }
+
+    else{
+
+        tuition.style.display = "flex";
+        graduation.style.display = "flex";
+
+    }
+
+    updateAutoProgressPreview();
+}
+
+
+function updateAutoProgressPreview(){
+
+    const temporaryStudent = {
+
+        feeType:
+            document.getElementById(
+                "feeType"
+            ).value,
+
+        tuitionPayment:
+            document.getElementById(
+                "tuitionPayment"
+            ).value,
+
+        graduationPayment:
+            document.getElementById(
+                "graduationPayment"
+            ).value
+
+    };
+
+    const progress =
+        getAutoProgress(
+            temporaryStudent
+        );
+
+    document.getElementById(
+        "autoProgressPreview"
+    ).textContent =
+        progress + "%";
+}
+
+
+function saveStudent(){
+
+    const name =
+        document.getElementById(
+            "studentName"
+        ).value.trim();
+
+    const program =
+        document.getElementById(
+            "studentProgram"
+        ).value;
+
+    const extensionGroup =
+        document.getElementById(
+            "extensionGroup"
+        ).value;
+
+    const trimester =
+        document.getElementById(
+            "studentTrimester"
+        ).value.trim();
+
+    const status =
+        document.getElementById(
+            "studentStatus"
+        ).value;
+
+    const feeType =
+        document.getElementById(
+            "feeType"
+        ).value;
+
+    const tuitionPayment =
+        document.getElementById(
+            "tuitionPayment"
+        ).value;
+
+    const graduationPayment =
+        document.getElementById(
+            "graduationPayment"
+        ).value;
+
+    const notes =
+        document.getElementById(
+            "studentNotes"
+        ).value.trim();
+
+    if(!name){
+
+        alert(
+            "Please enter the Student Name."
+        );
+
+        return;
+    }
+
+    if(!program){
+
+        alert(
+            "Please select a Program."
+        );
+
+        return;
+    }
+
+    if(!extensionGroup){
+
+        alert(
+            "Please select an Extension Group."
+        );
+
+        return;
+    }
+
+    if(!trimester){
+
+        alert(
+            "Please enter the Trimester."
+        );
+
+        return;
+    }
+
+    const student = {
+
+        name:name,
+        program:program,
+        extensionGroup:extensionGroup,
+        trimester:trimester,
+        status:status,
+        feeType:feeType,
+        tuitionPayment:tuitionPayment,
+        graduationPayment:graduationPayment,
+        notes:notes
+
+    };
+
+    if(editIndex === -1){
+
+        students.push(student);
+
+    }
+    else{
+
+        students[editIndex] =
+            student;
+
+    }
+
+    saveData();
+
+    closeModal();
+
+    displayDashboard();
+    displayStudents();
+    displayArchive();
+}
+
+
+function archiveStudent(index){
+
+    const student =
+        students[index];
+
+    if(!student){
+        return;
+    }
+
+    if(
+        !confirm(
+            "Are you sure you want to archive " +
+            student.name +
+            "?"
+        )
+    ){
+        return;
+    }
+
+    archivedStudents.push(student);
+
+    students.splice(index,1);
+
+    selectedStudents.clear();
+
+    saveData();
+
+    displayDashboard();
+    displayStudents();
+    displayArchive();
+    displayArchiveButton();
+}
+
+
+function restoreStudent(index){
+
+    const student =
+        archivedStudents[index];
+
+    if(!student){
+        return;
+    }
+
+    if(
+        !confirm(
+            "Restore " +
+            student.name +
+            "?"
+        )
+    ){
+        return;
+    }
+
+    students.push(student);
+
+    archivedStudents.splice(index,1);
+
+    selectedArchived.delete(index);
+
+    saveData();
+
+    displayDashboard();
+    displayStudents();
+    displayArchive();
+    displayArchiveRestoreButton();
+}
+
+
+/* ================= SECURITY / HTML ================= */
+
+function escapeHTML(value){
+
+    if(
+        value === null ||
+        value === undefined
+    ){
+
+        return "";
+
+    }
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* ================= MODAL CLICK ================= */
+
+window.addEventListener(
+    "click",
+    function(event){
+
+        const modal =
+            document.getElementById(
+                "studentModal"
+            );
+
+        if(event.target === modal){
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+/* ================= AUTO SAVE ================= */
+
+window.addEventListener(
+    "beforeunload",
+    function(){
+
+        saveDataWithoutMessage();
+
+    }
+);
+
+
+/* ================= START SYSTEM ================= */
+
+checkLogin();
+
+displayDashboard();
+displayStudents();
+displayArchive();
+displayArchiveButton();
+displayArchiveRestoreButton();
+
+</script>
+
+</body>
+</html>
